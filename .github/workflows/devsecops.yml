@@ -1,26 +1,26 @@
-name: DevSecOps - Scan Trivy
+name: DevSecOps - Trivy Scan
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  security:
+  security-scan:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout du code
-      uses: actions/checkout@v4
+      # 1. Récupérer le code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Installer Trivy
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/trivy.list
-        sudo apt-get update
-        sudo apt-get install -y trivy
-    - name: Analyse sécurité du projet
-      run: |
-        trivy fs --severity CRITICAL,HIGH --exit-code 1 .
+      # 2. Lancer l'analyse Trivy (Scan du système de fichiers 'fs')
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'             # On scanne les fichiers du repo
+          scan-ref: '.'
+          format: 'table'             # Affichage lisible dans les logs
+          exit-code: '1'              # IMPORTANT: 1 = Fait échouer le pipeline si failles trouvées
+          ignore-unfixed: true        # Ignore les failles sans correctif disponible
+          severity: 'CRITICAL,HIGH'   # On ne s'arrête que pour les failles graves
