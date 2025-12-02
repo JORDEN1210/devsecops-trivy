@@ -1,4 +1,4 @@
-name: DevSecOps - Scan Trivy
+    name: DevSecOps - Scan Trivy
 
 on:
   push:
@@ -24,4 +24,4 @@ jobs:
 
     - name: Analyse sécurité du projet
   run: |
-    trivy fs --scanners vuln,secret --severity CRITICAL,HIGH --exit-code 1 .
+    trivy fs --scanners vuln,secret --severity CRITICAL,HIGH --exit-code 1 --clear-cache .
