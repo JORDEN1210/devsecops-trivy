@@ -1,0 +1,25 @@
+name: DevSecOps - Scan Trivy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Récupération du code
+      uses: actions/checkout@v4
+
+    - name: Installation Trivy
+      run: |
+        sudo apt update
+        sudo apt install wget -y
+        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.51.1_Linux-64bit.deb
+        sudo dpkg -i trivy_0.51.1_Linux-64bit.deb
+
+    - name: Analyse sécurité du projet
+      run: |
+        trivy fs --severity CRITICAL,HIGH --exit-code 1 .
