@@ -1,4 +1,4 @@
-    name: DevSecOps - Scan Trivy
+name: DevSecOps - Scan Trivy
 
 on:
   push:
@@ -21,7 +21,6 @@ jobs:
         echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/trivy.list
         sudo apt-get update
         sudo apt-get install -y trivy
-
     - name: Analyse sécurité du projet
-  run: |
-    trivy fs --scanners vuln,secret --severity CRITICAL,HIGH --exit-code 1 --clear-cache .
+      run: |
+        trivy fs --severity CRITICAL,HIGH --exit-code 1 .
